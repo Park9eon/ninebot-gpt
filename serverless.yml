@@ -1,0 +1,18 @@
+service: ninebot
+
+provider:
+  name: aws
+  region: ap-northeast-2
+  runtime: nodejs16.x
+  memorySize: 512
+  timeout: 30
+
+functions:
+  slash:
+    handler: index.slash
+    environment:
+      OPENAI_API_KEY: ${file(./env.yml):openaiApiKey}
+    events:
+      - httpApi:
+          path: /slash
+          method: post

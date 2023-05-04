@@ -1,0 +1,16 @@
+{
+    "name": "ninebot",
+    "version": "1.0.0",
+    "main": "index.js",
+    "license": "MIT",
+    "private": true,
+    "scripts": {
+        "deploy": "serverless deploy"
+    },
+    "dependencies": {
+        "axios": "^1.4.0"
+    },
+    "devDependencies": {
+        "serverless": "^3.30.1"
+    }
+}
