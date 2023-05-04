@@ -1,9 +1,12 @@
+const {Lambda} = require("aws-sdk");
 const axios = require("axios");
 const querystring = require("querystring");
+const lambda = new Lambda();
 
-const {OPENAI_API_KEY} = process.env
+const {OPENAI_API_KEY, MESSAGE_FUNCTION_NAME} = process.env
 
-async function getChatResponse(user_name, text, response_url) {
+module.exports.message = async (event) => {
+    let {user_name, response_url, text} = event;
     let res
 
     try {
@@ -50,17 +53,12 @@ async function getChatResponse(user_name, text, response_url) {
     // not async
     await axios.post(response_url, {
         response_type: "in_channel",
+        replace_original: true,
         blocks: [{
             type: "section",
             text: {
                 type: "mrkdwn",
-                text: `*${user_name}*: ${text}`
-            }
-        }, {
-            type: "section",
-            text: {
-                type: "mrkdwn",
-                text: content
+                text: content,
             }
         }, {
             type: "section",
@@ -101,14 +99,35 @@ module.exports.slash = async (event) => {
 
     console.log(`Request body: ${bodyString}`)
 
-    // TODO: 람다로 async 처리
-    // await getChatResponse(user_name, text, response_url)
+    let result = await lambda.invoke({
+        FunctionName: MESSAGE_FUNCTION_NAME,
+        InvocationType: "Event",
+        Payload: JSON.stringify({
+            user_name,
+            response_url,
+            text,
+        }),
+    }).promise()
+
+    console.log(MESSAGE_FUNCTION_NAME, result)
 
     return {
         statusCode: 200,
         body: JSON.stringify({
             response_type: "in_channel",
-            text: "Processing...",
+            blocks: [{
+                type: "section",
+                text: {
+                    type: "mrkdwn",
+                    text: `*${user_name}*: ${text}`
+                }
+            }, {
+                type: "section",
+                text: {
+                    type: "mrkdwn",
+                    text: "입력중..."
+                }
+            }]
         }),
         headers: {
             "Content-Type": "application/json",
