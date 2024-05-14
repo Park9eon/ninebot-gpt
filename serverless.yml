@@ -3,7 +3,7 @@ service: ninebot
 provider:
   name: aws
   region: ap-northeast-2
-  runtime: nodejs16.x
+  runtime: nodejs20.x
   memorySize: 512
   iamRoleStatements:
     - Effect: 'Allow'

@@ -11,7 +11,7 @@ module.exports.message = async (event) => {
 
     try {
         res = await axios.post("https://api.openai.com/v1/chat/completions", {
-            model: "gpt-3.5-turbo", // 모델 (gpt-4, gpt-4-0314, gpt-4-32k, gpt-4-32k-0314, gpt-3.5-turbo, gpt-3.5-turbo-0301)
+            model: "gpt-4o", // 모델 (gpt-4, gpt-4-0314, gpt-4-32k, gpt-4-32k-0314, gpt-3.5-turbo, gpt-3.5-turbo-0301)
             messages: [{role: "user", content: text}],
             temperature: 1, // 샘플링 0.0 ~ 2.0
             top_p: 1, // 샘플링 0.0 ~ 1.0
